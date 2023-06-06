@@ -17,16 +17,25 @@
       in
       rec {
         packages.llvm =
-          stdenv.mkDerivation {
+          stdenv.mkDerivation rec {
             pname = "llvm";
-            version = "3.6-mono-2017-02-15";
+            version = "14-git";
 
-            src = pkgs.fetchFromGitHub {
-              owner = "mono";
-              repo = "llvm";
-              rev = "dbb6fdffdeb780d11851a6be77c209bd7ada4bd3";
-              sha256 = "07wd1cs3fdvzb1lv41b655z5zk34f47j8fgd9ljjimi5j9pj71f7";
+            llvmRepoSrc = pkgs.fetchFromGitHub {
+              owner = "llvm";
+              repo = "llvm-project";
+              rev = "f28c006a5895fc0e329fe15fead81e37457cb1d1";
+              sha256 = "vffu4HilvYwtzwgq+NlS26m65DGbp6OSSne2aje1yJE=";
             };
+
+            src = pkgs.runCommand "${pname}-src-${version}" {} (''
+              mkdir -p "$out"
+              cp -r ${llvmRepoSrc}/cmake "$out"
+              cp -r ${llvmRepoSrc}/llvm "$out"
+              cp -r ${llvmRepoSrc}/third-party "$out"
+            '');
+
+            sourceRoot = "${src.name}/llvm";
 
             nativeBuildInputs = [ pkgs.cmake ];
             buildInputs = [

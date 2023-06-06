@@ -14,6 +14,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
         stdenv = pkgs.stdenv;
         lib = nixpkgs.lib;
+        llvm_targets = "AArch64;AMDGPU;ARM;NVPTX;X86";
+        build_type = "Debug";
       in
       rec {
         packages.llvm =
@@ -33,6 +35,7 @@
               cp -r ${llvmRepoSrc}/cmake "$out"
               cp -r ${llvmRepoSrc}/llvm "$out"
               cp -r ${llvmRepoSrc}/third-party "$out"
+              cp -r ${llvmRepoSrc}/lld "$out"
             '');
 
             sourceRoot = "${src.name}/llvm";
@@ -54,7 +57,21 @@
             cmakeFlags = with stdenv; [
               "-DLLVM_ENABLE_FFI=ON"
               "-DLLVM_BINUTILS_INCDIR=${pkgs.libbfd.dev}/include"
-            ] ++ lib.optional (!isDarwin) "-DBUILD_SHARED_LIBS=ON";
+
+              "-DLLVM_BUILD_LLVM_DYLIB:BOOL=ON"
+              "-DLLVM_LINK_LLVM_DYLIB:BOOL=ON"
+              "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
+
+              # "-DLLVM_EXTERNAL_PROJECTS:STRING=rv"
+              # "-DLLVM_EXTERNAL_RV_SOURCE_DIR:PATH=${out}/llvm-project/rv"
+
+              "-DLLVM_ENABLE_RTTI:BOOL=ON"
+              # "-DLLVM_ENABLE_PROJECTS:STRING=clang;lld"
+              "-DLLVM_ENABLE_PROJECTS:STRING=lld"
+              "-DLLVM_ENABLE_BINDINGS:BOOL=OFF"
+              "-DLLVM_INCLUDE_TESTS:BOOL=ON"
+              "-DLLVM_TARGETS_TO_BUILD:STRING=${llvm_targets}"
+            ] ++ lib.optional (isDarwin) "-RV_REBUILD_GENBC:BOOL=ON";
 
             meta = {
               description = "Patched LLVM with RV";

@@ -16,6 +16,7 @@
         lib = nixpkgs.lib;
         llvm_targets = "AArch64;AMDGPU;ARM;NVPTX;X86";
         build_type = "Debug";
+        patch_dir = ./patches;
       in
       rec {
         packages.llvm =
@@ -30,12 +31,31 @@
               sha256 = "vffu4HilvYwtzwgq+NlS26m65DGbp6OSSne2aje1yJE=";
             };
 
+            rvSrc = pkgs.fetchFromGitHub {
+              owner = "cdl-saarland";
+              repo = "rv";
+              rev = "6a0b3ba2646d91a462a005533fdb4e33fc76dcc6";
+              sha256 = "l7NnWrxOx5Sb9gFBpx+Hh+F5CLFeNHBR0YbwDamrU8k=";
+            };
+
             src = pkgs.runCommand "${pname}-src-${version}" {} (''
               mkdir -p "$out"
               cp -r ${llvmRepoSrc}/cmake "$out"
               cp -r ${llvmRepoSrc}/llvm "$out"
               cp -r ${llvmRepoSrc}/third-party "$out"
               cp -r ${llvmRepoSrc}/lld "$out"
+              cp -r ${llvmRepoSrc}/clang "$out"
+              cp -r ${rvSrc} "$out"
+
+              (
+                cd "$out"
+                chmod -R u+rw *
+
+                if ! patch --dry-run --reverse --force -s -p1 -i ${patch_dir}/amdgpu_icmp_fold.patch; then
+                  patch -p1 -i ${patch_dir}/amdgpu_icmp_fold.patch
+                  patch -p1 -i ${patch_dir}/nvptx_feature.patch
+                fi
+              )
             '');
 
             sourceRoot = "${src.name}/llvm";
@@ -62,11 +82,12 @@
               "-DLLVM_LINK_LLVM_DYLIB:BOOL=ON"
               "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
 
-              # "-DLLVM_EXTERNAL_PROJECTS:STRING=rv"
-              # "-DLLVM_EXTERNAL_RV_SOURCE_DIR:PATH=${out}/llvm-project/rv"
+              "-DLLVM_EXTERNAL_PROJECTS:STRING=rv"
+              "-DLLVM_EXTERNAL_RV_SOURCE_DIR:PATH=${out}/llvm-project/rv"
 
               "-DLLVM_ENABLE_RTTI:BOOL=ON"
-              # "-DLLVM_ENABLE_PROJECTS:STRING=clang;lld"
+              # clang is broken for now for some reason
+              # "-DLLVM_ENABLE_PROJECTS:STRING=lld;clang"
               "-DLLVM_ENABLE_PROJECTS:STRING=lld"
               "-DLLVM_ENABLE_BINDINGS:BOOL=OFF"
               "-DLLVM_INCLUDE_TESTS:BOOL=ON"

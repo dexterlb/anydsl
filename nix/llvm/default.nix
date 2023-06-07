@@ -33,7 +33,7 @@ in stdenv.mkDerivation rec {
         cp -r ${llvmRepoSrc}/lld "$out"
         cp -r ${llvmRepoSrc}/libunwind "$out"
         cp -r ${llvmRepoSrc}/clang "$out"
-        cp -r ${rvSrc} "$out"
+        cp -r ${rvSrc} "$out/rv"
 
         (
           cd "$out"
@@ -71,12 +71,12 @@ in stdenv.mkDerivation rec {
         "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
 
         "-DLLVM_EXTERNAL_PROJECTS:STRING=rv"
-        "-DLLVM_EXTERNAL_RV_SOURCE_DIR:PATH=${out}/llvm-project/rv"
+        "-DLLVM_EXTERNAL_RV_SOURCE_DIR:PATH=${src.name}/rv"
 
         "-DLLVM_ENABLE_RTTI:BOOL=ON"
         # clang is broken for now for some reason
-        # "-DLLVM_ENABLE_PROJECTS:STRING=lld;rv;clang"
-        "-DLLVM_ENABLE_PROJECTS:STRING=lld;rv"
+        # "-DLLVM_ENABLE_PROJECTS:STRING=lld;clang"
+        "-DLLVM_ENABLE_PROJECTS:STRING=lld"
         "-DLLVM_ENABLE_BINDINGS:BOOL=OFF"
         "-DLLVM_INCLUDE_TESTS:BOOL=ON"
         "-DLLVM_TARGETS_TO_BUILD:STRING=${llvm_targets}"

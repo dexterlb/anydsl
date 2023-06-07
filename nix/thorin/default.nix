@@ -1,12 +1,12 @@
 {
   pkgs,
-  nixpkgs,
+  lib,
   llvm,
   half,
+  ...
 }:
 let
   stdenv = pkgs.stdenv;
-  lib = nixpkgs.lib;
   build_type = "Debug";
   enable_profiling = "false";
 

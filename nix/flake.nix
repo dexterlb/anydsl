@@ -10,11 +10,12 @@
     with flake-utils.lib;
     eachSystem allSystems (system: let
         pkgs = nixpkgs.legacyPackages.${system};
+        lib = nixpkgs.lib;
       in rec {
-        packages.llvm = (import ./llvm) { nixpkgs = nixpkgs; pkgs = pkgs; };
-        packages.half = (import ./half) { nixpkgs = nixpkgs; pkgs = pkgs; };
+        packages.llvm = (import ./llvm) { inherit pkgs lib; };
+        packages.half = (import ./half) { inherit pkgs lib; };
         packages.thorin = (import ./thorin) {
-          nixpkgs = nixpkgs; pkgs = pkgs;
+          inherit pkgs lib;
           half = packages.half;
           llvm = packages.llvm;
         };

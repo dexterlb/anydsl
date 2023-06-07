@@ -1,10 +1,10 @@
 {
   pkgs,
-  nixpkgs,
+  lib,
+  ...
 }:
 let
   stdenv = pkgs.stdenv;
-  lib = nixpkgs.lib;
 in pkgs.stdenvNoCC.mkDerivation rec {
   name = "half";
 

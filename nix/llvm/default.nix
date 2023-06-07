@@ -1,10 +1,9 @@
 {
   pkgs,
-  nixpkgs,
+  lib,
 }:
 let
   stdenv = pkgs.stdenv;
-  lib = nixpkgs.lib;
   llvm_targets = "AArch64;AMDGPU;ARM;NVPTX;X86";
   build_type = "Debug";
   patch_dir = ./patches;

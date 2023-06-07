@@ -15,7 +15,7 @@ let
   artic_cmake_path = "${artic}/share/anydsl/cmake";
   impala_cmake_path = "${impala}/share/anydsl/cmake";
 in stdenv.mkDerivation rec {
-  pname = "thorin";
+  pname = "runtime";
   version = "git";
 
   src = pkgs.fetchFromGitHub {

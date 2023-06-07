@@ -10,7 +10,7 @@ let
 
   thorin_cmake_path = "${thorin}/share/anydsl/cmake";
 in stdenv.mkDerivation rec {
-  pname = "thorin";
+  pname = "impala";
   version = "git";
 
   src = pkgs.fetchFromGitHub {
@@ -25,6 +25,11 @@ in stdenv.mkDerivation rec {
   buildInputs = [ thorin ];
 
   postBuild = "rm -fR $out";
+
+  installPhase = ''
+    mkdir -p $out
+    cp -raf ./{bin,lib,share,include}/ $out/
+  '';
 
   cmakeFlags = with stdenv; [
     "-DCMAKE_BUILD_TYPE:STRING=${build_type}"

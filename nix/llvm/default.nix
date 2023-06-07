@@ -75,8 +75,8 @@ in stdenv.mkDerivation rec {
 
         "-DLLVM_ENABLE_RTTI:BOOL=ON"
         # clang is broken for now for some reason
-        # "-DLLVM_ENABLE_PROJECTS:STRING=lld;clang"
-        "-DLLVM_ENABLE_PROJECTS:STRING=lld"
+        # "-DLLVM_ENABLE_PROJECTS:STRING=lld;rv;clang"
+        "-DLLVM_ENABLE_PROJECTS:STRING=lld;rv"
         "-DLLVM_ENABLE_BINDINGS:BOOL=OFF"
         "-DLLVM_INCLUDE_TESTS:BOOL=ON"
         "-DLLVM_TARGETS_TO_BUILD:STRING=${llvm_targets}"

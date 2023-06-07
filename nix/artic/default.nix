@@ -10,14 +10,14 @@ let
 
   thorin_cmake_path = "${thorin}/share/anydsl/cmake";
 in stdenv.mkDerivation rec {
-  pname = "thorin";
+  pname = "artic";
   version = "git";
 
   src = pkgs.fetchFromGitHub {
     owner = "AnyDSL";
     repo = "artic";
     rev = "bb9f15faa788671647e1c98612cacc876c834021";
-    sha256 = "cece23AxeHd4iUQrMUPrgjOn0AaUQ9cg9ADNWQNBPQI=";
+    sha256 = "kMy8oFg1R0t/ldKOI7JY2PxA/OzRT7nSoFAhweMkSco=";
   };
 
   nativeBuildInputs = [ pkgs.cmake ];

@@ -25,7 +25,7 @@ in stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ pkgs.cmake ];
 
-  buildInputs = [ llvm ];
+  propagatedBuildInputs = [ llvm half ];
 
   postBuild = "rm -fR $out";
 
@@ -36,11 +36,12 @@ in stdenv.mkDerivation rec {
     "-DHalf_DIR:PATH=${half_include_path}"
   ];
 
+  installPhase = ''
+    cp -raf ./{lib,share,include}/ $out/
+  '';
+
   meta = {
     description = "Thorin";
     homepage    = "https://anydsl.github.io/";
-    license     = lib.licenses.bsd3;
-    maintainers = with lib.maintainers; [ thoughtpolice ];
-    platforms   = lib.platforms.all;
   };
 }

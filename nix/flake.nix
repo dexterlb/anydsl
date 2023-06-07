@@ -19,7 +19,31 @@
           half = packages.half;
           llvm = packages.llvm;
         };
-        packages.default = packages.thorin;
+        packages.artic = (import ./artic) {
+          inherit pkgs lib;
+          thorin = packages.thorin;
+        };
+        packages.impala = (import ./impala) {
+          inherit pkgs lib;
+          thorin = packages.thorin;
+        };
+        packages.runtime = (import ./runtime) {
+          inherit pkgs lib;
+          impala = packages.impala;
+          artic = packages.artic;
+        };
+
+        packages.default = packages.impala;
+
+        devShell = pkgs.mkShell {
+          packages = [
+            packages.llvm
+            packages.thorin
+            packages.impala
+            packages.artic
+            packages.runtime
+          ];
+        };
       }
   );
 }

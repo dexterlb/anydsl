@@ -23,12 +23,9 @@ in stdenv.mkDerivation rec {
     sha256 = "HY0b23AxeHd4iUQrMUPrgjOn0AaUQ9cg9ADNWQNBPQI=";
   };
 
-  nativeBuildInputs = [ pkgs.cmake llvm ];
+  nativeBuildInputs = [ pkgs.cmake ];
 
-  buildInputs = [
-  ];
-
-  propagatedBuildInputs = [ pkgs.ncurses pkgs.zlib ];
+  buildInputs = [ llvm ];
 
   postBuild = "rm -fR $out";
 

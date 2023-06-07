@@ -44,6 +44,7 @@
               cp -r ${llvmRepoSrc}/llvm "$out"
               cp -r ${llvmRepoSrc}/third-party "$out"
               cp -r ${llvmRepoSrc}/lld "$out"
+              cp -r ${llvmRepoSrc}/libunwind "$out"
               cp -r ${llvmRepoSrc}/clang "$out"
               cp -r ${rvSrc} "$out"
 

@@ -30,7 +30,7 @@ in stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out
-    cp -raf ./{bin,lib,share,include}/ $out/
+    cp -raf ./{bin,lib,share}/ $out/
   '';
 
   cmakeFlags = with stdenv; [

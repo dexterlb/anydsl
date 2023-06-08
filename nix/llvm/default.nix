@@ -46,11 +46,14 @@ in stdenv.mkDerivation rec {
         )
       '');
 
-      sourceRoot = "${src.name}/llvm";
+      # TODO: determine if there's a more proper way to get the build
+      # dir path (hardcoding /build for now, seems like nix always uses this path)
+      sourceRoot = "/build/${src.name}/llvm";
 
       nativeBuildInputs = [ pkgs.cmake ];
       buildInputs = [
         pkgs.python3 pkgs.perl pkgs.groff pkgs.libxml2 pkgs.libffi
+        pkgs.git
       ] ++ lib.optional stdenv.isLinux pkgs.valgrind;
 
       propagatedBuildInputs = [ pkgs.ncurses pkgs.zlib ];
@@ -60,6 +63,7 @@ in stdenv.mkDerivation rec {
         mkdir -p $out/
         ln -sv $PWD/lib $out
       '';
+
       postBuild = "rm -fR $out";
 
       cmakeFlags = with stdenv; [
@@ -71,7 +75,7 @@ in stdenv.mkDerivation rec {
         "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
 
         "-DLLVM_EXTERNAL_PROJECTS:STRING=rv"
-        "-DLLVM_EXTERNAL_RV_SOURCE_DIR:PATH=${src.name}/rv"
+        "-DLLVM_EXTERNAL_RV_SOURCE_DIR:PATH=${sourceRoot}/../rv"
 
         "-DLLVM_ENABLE_RTTI:BOOL=ON"
         # clang is broken for now for some reason

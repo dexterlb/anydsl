@@ -9,6 +9,8 @@ let
   build_type = "Debug";
 
   thorin_cmake_path = "${thorin}/share/anydsl/cmake";
+  thorin_include_path = "${thorin}/include";
+  thorin_module_path = "${thorin}/share/anydsl/cmake/modules";
 in stdenv.mkDerivation rec {
   pname = "impala";
   version = "git";
@@ -34,6 +36,9 @@ in stdenv.mkDerivation rec {
   cmakeFlags = with stdenv; [
     "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
     "-DThorin_DIR:PATH=${thorin_cmake_path}"
+    "-DThorin_INCLUDE_DIR:PATH=${thorin_include_path}"
+
+    "-DCMAKE_MODULE_PATH=${thorin_module_path}"
   ];
 
   meta = {

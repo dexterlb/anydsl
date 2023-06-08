@@ -23,9 +23,12 @@ in stdenv.mkDerivation rec {
     sha256 = "HY0b23AxeHd4iUQrMUPrgjOn0AaUQ9cg9ADNWQNBPQI=";
   };
 
+
   nativeBuildInputs = [ pkgs.cmake ];
 
-  propagatedBuildInputs = [ llvm half ];
+  propagatedBuildInputs = [ llvm half pkgs.libxml2 ];
+
+  buildInputs = [ pkgs.libffi ];
 
   postBuild = "rm -fR $out";
 
@@ -37,7 +40,17 @@ in stdenv.mkDerivation rec {
   ];
 
   installPhase = ''
+    mkdir -p $out
+    build_dir="''$(pwd)"
+    source_dir="''$(readlink -f ''$build_dir/..)"
+
     cp -raf ./{lib,share,include}/ $out/
+
+    # This is a massive hack. Instead of doing this, coerce cmake to do it on its own
+    sed -r -e '/build\/source\/build/d' -i $out/share/anydsl/cmake/thorin-config.cmake
+    sed -r -e "s:''$build_dir/(lib|share|include):$out/\1:g" -e "s:;''$source_dir/src;:;:g" -i $out/share/anydsl/cmake/thorin-exports.cmake
+
+    cp -raf $src/cmake/modules $out/share/anydsl/cmake/
   '';
 
   meta = {

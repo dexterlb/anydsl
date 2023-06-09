@@ -11,6 +11,8 @@ let
   thorin_cmake_path = "${thorin}/share/anydsl/cmake";
   thorin_include_path = "${thorin}/include";
   thorin_module_path = "${thorin}/share/anydsl/cmake/modules";
+
+  install_script = ./../install_anydsl_project.sh;
 in stdenv.mkDerivation rec {
   pname = "artic";
   version = "git";
@@ -33,23 +35,7 @@ in stdenv.mkDerivation rec {
   dontStrip = true;
 
   installPhase = ''
-    build_dir=''$(pwd)
-
-    mkdir -p $out
-
-    cp -raf ./{bin,lib,share}/ $out/
-
-    function fix_rpath {
-      old_rpath="''$(patchelf --print-rpath "''$1")"
-      rpath="''$(echo "''$old_rpath" | sed -r "s|''$build_dir|$out|g")"
-      echo "changing RPATH of ''$1 from ''$old_rpath to ''$rpath" >&2
-
-      patchelf --set-rpath "''$rpath" "''$1"
-    }
-
-    for binary in "''$out/bin"/*; do
-      fix_rpath "''$binary"
-    done
+    bash "${install_script}" "$out"
   '';
 
   cmakeFlags = with stdenv; [

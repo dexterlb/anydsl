@@ -3,6 +3,7 @@
   lib,
   impala,
   artic,
+  thorin,
   ...
 }:
 let
@@ -22,7 +23,7 @@ in stdenv.mkDerivation rec {
     owner = "AnyDSL";
     repo = "runtime";
     rev = "e31cec49ffe64342a1252f62942d882c198d7a3b";
-    sha256 = "baba23AxeHd4iUQrMUPrgjOn0AaUQ9cg9ADNWQNBPQI=";
+    sha256 = "Mnnsh0qqJlu4yrVEq1TTvgMddrcs2WSj+t85V2RU0/A=";
   };
 
   nativeBuildInputs = [ pkgs.cmake ];

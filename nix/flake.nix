@@ -31,6 +31,7 @@
           inherit pkgs lib;
           impala = packages.impala;
           artic = packages.artic;
+          thorin = packages.thorin;
         };
 
         packages.default = packages.impala;

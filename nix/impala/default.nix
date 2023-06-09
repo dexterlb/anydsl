@@ -22,15 +22,34 @@ in stdenv.mkDerivation rec {
     sha256 = "HHy72vBkxM8BVi3RlObWH3mh0/tgE1aAy2J/KQlMldQ=";
   };
 
-  nativeBuildInputs = [ pkgs.cmake ];
+  nativeBuildInputs = [ pkgs.patchelf pkgs.cmake ];
 
-  buildInputs = [ thorin ];
+  buildInputs = [ ];
+
+  propagatedBuildInputs = [ thorin ];
 
   postBuild = "rm -fR $out";
 
+  dontStrip = true;
+
   installPhase = ''
+    build_dir=''$(pwd)
+
     mkdir -p $out
+
     cp -raf ./{bin,lib,share}/ $out/
+
+    function fix_rpath {
+      old_rpath="''$(patchelf --print-rpath "''$1")"
+      rpath="''$(echo "''$old_rpath" | sed -r "s|''$build_dir|$out|g")"
+      echo "changing RPATH of ''$1 from ''$old_rpath to ''$rpath" >&2
+
+      patchelf --set-rpath "''$rpath" "''$1"
+    }
+
+    for binary in "''$out/bin"/*; do
+      fix_rpath "''$binary"
+    done
   '';
 
   cmakeFlags = with stdenv; [

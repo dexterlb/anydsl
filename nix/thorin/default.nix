@@ -28,7 +28,7 @@ in stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ pkgs.cmake ];
 
-  propagatedBuildInputs = [ llvm half pkgs.libxml2 ];
+  propagatedBuildInputs = [ llvm half pkgs.libxml2 pkgs.libffi ];
 
   buildInputs = [ pkgs.libffi ];
 

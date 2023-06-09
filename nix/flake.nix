@@ -33,6 +33,12 @@
           artic = packages.artic;
           thorin = packages.thorin;
         };
+        packages.rodent = (import ./rodent) {
+          inherit pkgs lib;
+          impala = packages.impala;
+          thorin = packages.thorin;
+          runtime = packages.runtime;
+        };
 
         packages.default = packages.impala;
 

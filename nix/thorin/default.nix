@@ -68,6 +68,8 @@ in stdenv.mkDerivation rec {
     # to output a proper tree that doesn't reference the build dir. TODO.
   '';
 
+  dontStrip = (build_type != "Release");
+
   meta = {
     description = "Thorin";
     homepage    = "https://anydsl.github.io/";
